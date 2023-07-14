@@ -10,6 +10,7 @@ pub enum Operation {
     Reset,
     Sort,
     Exit,
+    Help,
 }
 
 impl FromStr for Operation {
@@ -24,6 +25,7 @@ impl FromStr for Operation {
             "reset" => Ok(Operation::Reset),
             "sort" => Ok(Operation::Sort),
             "exit" | "quit" => Ok(Operation::Exit),
+            "help" | "--help" | "-h" => Ok(Operation::Help),
             _ => Err(()),
         }
     }
@@ -85,6 +87,7 @@ pub fn process_operation(todo_l: &mut Vec<Todo>, op: Operation, args: &[&str]) {
         Operation::Reset => todo_l.clear(),
         Operation::Sort => todo_l.sort_by(|a, b| a.done.cmp(&b.done)),
         Operation::Exit => (),
+        Operation::Help => println!("{}", HELP_MESSAGE),
     }
 }
 
@@ -108,3 +111,26 @@ pub fn populate_todo() -> Vec<Todo> {
 
     vec![todo1, todo2, todo3, todo4]
 }
+
+const HELP_MESSAGE: &str = "Usage: [COMMAND] [ARGUMENTS]
+Todo is a super fast and simple tasks organizer written in rust (credits to https://github.com/sioodmy/todo)
+Example: list
+Available commands:
+    - add [TASK]
+        adds new task
+        Example: add buy carrots
+    - list
+        lists all tasks
+        Example: list
+    - done [INDEX]
+        marks task as done
+        Example: done 2 3 (marks second and third tasks as completed)
+    - rm [INDEX]
+        removes a task
+        Example: rm 4
+    - reset
+        deletes all tasks
+    - sort
+        sorts completed and uncompleted tasks
+        Example: sort
+";
